@@ -119,7 +119,7 @@ class TestIntegrationPsycopgCommon:
     def test_connection_string_format(self, cluster_config, dsql_connector):
         """Test connection using connection string."""
         conn_str = f"postgresql://{cluster_config['host']}/{cluster_config['dbname']}?user={cluster_config['user']}"
-        
+
         if cluster_config.get("profile"):
             conn_str += f"&profile={cluster_config['profile']}"
 

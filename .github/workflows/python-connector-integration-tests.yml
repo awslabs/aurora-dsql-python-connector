@@ -62,4 +62,3 @@ jobs:
         pip list
         echo "$GITHUB_WORKSPACE" >> $GITHUB_PATH
         python -m pytest tests/integration
-        
