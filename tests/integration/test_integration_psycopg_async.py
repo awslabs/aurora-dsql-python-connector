@@ -41,7 +41,7 @@ class TestIntegrationAsync:
             config["profile"] = aws_profile
 
         if not config["host"]:
-            pytest.skip("CLUSTER_ENDPOINT environment variable not set")
+            raise ValueError("CLUSTER_ENDPOINT environment variable not set")
 
         return config
 
