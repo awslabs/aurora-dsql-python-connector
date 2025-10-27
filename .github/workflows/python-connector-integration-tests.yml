@@ -10,8 +10,7 @@ on:
       - './tests/**'
       - '.github/workflows/python-connector-integration-tests.yml'
   pull_request:
-    branches: 
-      - '*'
+    branches: [ main ]
     paths:
       - './src/**'
       - './tests/**'
