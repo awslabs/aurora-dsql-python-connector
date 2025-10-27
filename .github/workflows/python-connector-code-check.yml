@@ -45,7 +45,6 @@ jobs:
 
     - name: Configure and install dependencies
       working-directory: ./
-      env:
       run: |
         python3 -m venv .venv
         source .venv/bin/activate
