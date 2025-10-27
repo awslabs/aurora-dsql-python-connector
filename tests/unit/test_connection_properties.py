@@ -5,9 +5,10 @@ SPDX-License-Identifier: Apache-2.0
 
 import pytest
 
+from dsql_core.connection_properties import ConnectionProperties
+
 # from unittest.mock import Mock, patch
 
-from dsql_core.connection_properties import ConnectionProperties
 
 
 @pytest.mark.unit
