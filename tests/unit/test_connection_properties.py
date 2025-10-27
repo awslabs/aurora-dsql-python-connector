@@ -7,9 +7,6 @@ import pytest
 
 from dsql_core.connection_properties import ConnectionProperties
 
-# from unittest.mock import Mock, patch
-
-
 
 @pytest.mark.unit
 class TestDSNParsing:

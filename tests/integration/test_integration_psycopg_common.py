@@ -8,8 +8,7 @@ from datetime import datetime, timedelta, timezone
 
 import boto3
 import pytest
-from botocore.credentials import (CredentialProvider,
-                                  DeferredRefreshableCredentials)
+from botocore.credentials import CredentialProvider, DeferredRefreshableCredentials
 from psycopg import Error as PsycopgError
 from psycopg import OperationalError as PsycopgOperationalError
 from psycopg2 import OperationalError as Psycopg2OperationalError
