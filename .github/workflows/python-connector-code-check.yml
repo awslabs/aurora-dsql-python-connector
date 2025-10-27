@@ -50,6 +50,7 @@ jobs:
         source .venv/bin/activate
         pip install --upgrade pip
         pip install -e ".[dev]"
+        pip install poetry
     
     - name: Run mypy - static type checking
       run: poetry run mypy .
