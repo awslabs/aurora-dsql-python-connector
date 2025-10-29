@@ -162,21 +162,23 @@ class TestIntegrationPsycopgCommon:
                 # Insert data
                 cur.execute(
                     "INSERT INTO test_integration_db_operations (name) VALUES (%s) RETURNING id",
-                    (
-                        "integration_test",
-                    ),
+                    ("integration_test",),
                 )
                 record_id = cur.fetchone()[0]
 
                 # Query data
                 cur.execute(
-                    "SELECT name FROM test_integration_db_operations WHERE id = %s", (record_id,)
+                    "SELECT name FROM test_integration_db_operations WHERE id = %s",
+                    (record_id,),
                 )
                 result = cur.fetchone()
                 assert result[0] == "integration_test"
 
                 # Clean up
-                cur.execute("DELETE FROM test_integration_db_operations WHERE id = %s", (record_id,))
+                cur.execute(
+                    "DELETE FROM test_integration_db_operations WHERE id = %s",
+                    (record_id,),
+                )
                 conn.commit()
         finally:
             conn.close()
