@@ -52,19 +52,17 @@ class TestIntegration:
                 # Create test table
                 cur.execute(
                     """
-                    CREATE TABLE IF NOT EXISTS test_integration (
-                        id INT PRIMARY KEY,
+                    CREATE TABLE IF NOT EXISTS test_integration_db_operations_auto (
+                        id uuid NOT NULL DEFAULT gen_random_uuid(),
                         name TEXT NOT NULL,
                         created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
                     )
                 """
                 )
-                cur.execute("DELETE FROM test_integration")
                 # Insert data
                 cur.execute(
-                    "INSERT INTO test_integration (id, name) VALUES (%s, %s) RETURNING id",
+                    "INSERT INTO test_integration_db_operations_auto (name) VALUES (%s) RETURNING id",
                     (
-                        1,
                         "integration_test",
                     ),
                 )
@@ -72,13 +70,13 @@ class TestIntegration:
 
                 # Query data
                 cur.execute(
-                    "SELECT name FROM test_integration WHERE id = %s", (record_id,)
+                    "SELECT name FROM test_integration_db_operations_auto WHERE id = %s", (record_id,)
                 )
                 result = cur.fetchone()
                 assert result[0] == "integration_test"
 
                 # Clean up
-                cur.execute("DELETE FROM test_integration WHERE id = %s", (record_id,))
+                cur.execute("DELETE FROM test_integration_db_operations_auto WHERE id = %s", (record_id,))
 
         finally:
             conn.close()
