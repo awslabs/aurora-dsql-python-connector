@@ -231,7 +231,7 @@ For full example code, refer to the examples directory in this repository as ind
 
 ```bash
 # Install dependencies
-pip install -e ".[psycopg,psycopg2,dev]"
+pip install -e ".[psycopg,psycopg2,asyncpg,dev]"
 
 # Run unit tests
 python -m pytest tests/unit/
