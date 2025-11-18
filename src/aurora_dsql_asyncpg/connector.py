@@ -30,7 +30,7 @@ async def _handleSSLParameters(params: Dict[str, Any]) -> None:
         and (params["ssl"] in ["verify-ca", "verify-full"])
         and ("sslrootcert" in params)
     ):
-        # if "sslrootcert" parameter is passed for "ssl=verify-full" or "ssl=verify-ca"
+        # If "sslrootcert" parameter is passed for "ssl=verify-full" or "ssl=verify-ca"
         # we need to use ssl context object to pass to asyncpg
 
         import ssl
@@ -38,10 +38,9 @@ async def _handleSSLParameters(params: Dict[str, Any]) -> None:
         ssl_cert_path = params["sslrootcert"]
 
         ssl_context = ssl.create_default_context()
-        ssl_context.check_hostname = (
-            True  # This enables hostname verification (verify-full)
-        )
-        ssl_context.verify_mode = ssl.CERT_REQUIRED  # This is equivalent to verify-full
+        # Set check_hostname to true when "verify-full" and false otherwise.
+        ssl_context.check_hostname = params["ssl"] == "verify-full"
+        ssl_context.verify_mode = ssl.CERT_REQUIRED
         ssl_context.load_verify_locations(ssl_cert_path)
 
         params["ssl"] = ssl_context
