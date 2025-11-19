@@ -21,20 +21,33 @@ existing Python libraries do not natively support.
 The idea behind the Aurora DSQL Connector for Python is to add an authentication layer on top of the psycopg, psycopg2, and asyncpg
 client libraries that handles IAM token generation, allowing users to connect to Aurora DSQL without changing their existing workflows.
 
+### What is Aurora DSQL Authentication?
+
+In Aurora DSQL, authentication involves:
+
+- **IAM Authentication:** All connections use IAM-based authentication with time-limited tokens
+- **Token Generation:** Authentication tokens are generated using AWS credentials and have configurable lifetimes
+
+The Aurora DSQL Connector for Python is designed to understand these requirements and automatically generate IAM authentication tokens when establishing connections.
+
+
 ### Features
 
-- **Automatic IAM Authentication** - Handles DSQL token generation
-- **Built on psycopg and psycopg2** - Leverages the psycopg and psycopg2 client libraries
+- **Automatic IAM Authentication** - IAM tokens are generated automatically using AWS credentials
+- **Built on psycopg, psycopg2, and asyncpg** - Leverages the psycopg, psycopg2, and asyncpg client libraries
+- **Seamless Integration** - Works with existing psycopg, psycopg2, and asyncpg connection patterns without requiring workflow changes
 - **Region Auto-Discovery** - Extracts AWS region from DSQL cluster hostname
-- **Custom Credentials** - Support for custom AWS credential providers
+- **AWS Credentials Support** - Supports various AWS credential providers (default, profile-based, custom)
+- **Connection Pooling Compatibility** - Works with psycopg, psycopg2, and asyncpg built-in connection pooling
 
 ## Quick start guide
 
 ### Requirements
 
 - Python 3.10 or higher
+- [Access to an Aurora DSQL cluster](https://docs.aws.amazon.com/aurora-dsql/latest/userguide/getting-started.html)
+- Set up appropriate IAM permissions to allow your application to connect to Aurora DSQL.
 - AWS credentials configured (via AWS CLI, environment variables, or IAM roles)
-- Access to an Aurora DSQL cluster
 
 
 ### Installation
@@ -320,8 +333,7 @@ To make it work, provide region as a parameter as in the example below:
     print(result)
 ```
 
-
-## Configuration Options
+### Configuration Options
 
 | Option                        | Type                     | Required | Description                                                   |
 |-------------------------------|--------------------------|----------|---------------------------------------------------------------|
@@ -335,12 +347,82 @@ To make it work, provide region as a parameter as in the example below:
 | `token_duration_secs`         | `int`                    | No       | Token expiration time in seconds                              |
 
 
-All standard connection options of the underlying psycopg and psycopg2 libraries are also supported.
+All standard connection options of the underlying psycopg, psycopg2, and asyncpg libraries are also supported.
+
+**Exeption:**
+The following asyncpg parameters do not apply to DSQL and are not supported.
+- krbsrvname
+- gsslib
+
+### Using the Aurora DSQL connector for Python with connection pooling
+
+The Aurora DSQL Connector for Python works with psycopg, psycopg2, and asyncpg built-in connection pooling. The connector handles IAM token generation during connection establishment, allowing connection pools to operate normally.
+
+#### psycopg
+
+For psycopg, the connector implements a connection class named DSQLConnection that can be passed directly to the psycopg_pool.ConnectionPool constructor. For asynchronous operations, there is also an async version of the class named DSQLAsyncConnection.
+
+```python
+    from psycopg_pool import ConnectionPool as PsycopgPool
+    
+    ...
+    pool = PsycopgPool(
+        "",  
+        connection_class=dsql.DSQLConnection,
+        kwargs=conn_params,
+        min_size=2,
+        max_size=8,
+        max_lifetime=3300
+    )
+```
+
+**Note:  Connection max_lifetime Configuration**
+
+The max_lifetime parameter should be set to less than 3600 seconds (one hour), as this is the maximum connection duration allowed by Aurora DSQL database. Setting a lower max_lifetime allows the connection pool to proactively manage connection recycling, which is more efficient than handling connection timeout errors from the database.
+
+#### psycopg2 
+
+For psycopg2, the connector provides a class named AuroraDSQLThreadedConnectionPool that inherits from psycopg2.pool.ThreadedConnectionPool. The AuroraDSQLThreadedConnectionPool class only overrides the internal _connect method. The rest of the implementation is provided by psycopg2.pool.ThreadedConnectionPool unchanged.
+
+```python
+    import aurora_dsql_psycopg2 as dsql
+
+    pool = dsql.AuroraDSQLThreadedConnectionPool(
+            minconn=2,
+            maxconn=8,
+            **conn_params,
+    )
+
+```
+
+#### asyncpg
+
+For asyncpg, the connector provides a create_pool function that returns an instance of asyncpg.Pool.
+
+```python
+    import asyncio
+    import os
+
+    import aurora_dsql_asyncpg as dsql
+
+    pool_params = {
+        'host': "your-cluster.dsql.us-east-1.on.aws",
+        'user': "admin",
+        "min_size": 2,
+        "max_size": 5,
+    }
+
+    pool = await dsql.create_pool(**pool_params)
+```
+
+
 
 ## Authentication
 
 The connector automatically handles DSQL authentication by generating tokens using the DSQL client token generator. If the
 AWS region is not provided, it will be automatically parsed from the hostname provided.
+
+For more information on authentication in Aurora DSQL, see the [user guide](https://docs.aws.amazon.com/aurora-dsql/latest/userguide/authentication-authorization.html).
 
 ### Admin vs Regular Users
 
@@ -350,10 +432,12 @@ AWS region is not provided, it will be automatically parsed from the hostname pr
 
 ## Examples
 
-For full example code, refer to the examples directory in this repository as indicated in the sections below.
+For full example code, refer to the examples as indicated in the sections below.
+For instructions how to run the examples please refer to the examples READMDE files.
 
 ### psycopg
 
+[Examples README](https://github.com/awslabs/aurora-dsql-python-connector/blob/main/examples/psycopg/README.md)
 
 | Description                                                                     | Examples                                                                                                                                                                                   |
 |---------------------------------------------------------------------------------|--------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|
@@ -366,6 +450,7 @@ For full example code, refer to the examples directory in this repository as ind
 
 ### psycopg2 
 
+[Examples README](https://github.com/awslabs/aurora-dsql-python-connector/blob/main/examples/psycopg2/README.md)
 
 | Description                                                                     | Examples                                                                                                                                                                                   |
 |---------------------------------------------------------------------------------|--------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|
@@ -375,6 +460,8 @@ For full example code, refer to the examples directory in this repository as ind
 
 
 ### asyncpg
+
+[Examples README](https://github.com/awslabs/aurora-dsql-python-connector/blob/main/examples/asyncpg/README.md)
 
 | Description                                                                     | Examples                                                                                                                                                                                   |
 |---------------------------------------------------------------------------------|--------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|
