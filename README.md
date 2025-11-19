@@ -48,19 +48,18 @@ pip install aurora-dsql-python-connector
 The Aurora DSQL Connector for Python installer does not install the underlying libraries.
 They need to be installed separately, e.g.:
 
+```bash
+# Install psycopg and psycopg pool
+pip install "psycopg[binary,pool]"
+```
 
 ```bash
-# The command below installs psycopg and psycopg pool
-pip install "psycopg[binary,pool]"
-
-# OR
-
-# The command below installs psycopg2
+# Install psycopg2
 pip install psycopg2-binary
+```
 
-# OR
-
-# The command below installs asyncpg
+```bash
+# Install asyncpg
 pip install asyncpg
 ```
 
@@ -78,10 +77,24 @@ If the client needs more than one, then all the needed libraries need to be inst
 #### psycopg
 
 ```python
-    # Use this import for psycopg
     import aurora_dsql_psycopg as dsql
 
-    # Use this import for psycopg2
+    config = {
+        'host': "your-cluster.dsql.us-east-1.on.aws",
+        'region': "us-east-1",
+        'user': "admin",
+    }
+        
+    conn = dsql.connect(**config)
+    with conn.cursor() as cur:
+        cur.execute("SELECT 1")
+        result = cur.fetchone()
+        print(result)
+```
+
+#### psycopg2
+
+```python
     import aurora_dsql_psycopg2 as dsql
 
     config = {
@@ -120,10 +133,14 @@ If the client needs more than one, then all the needed libraries need to be inst
 ##### psycopg
 
 ```python
-    # Use this import for psycopg
     import aurora_dsql_psycopg as dsql
 
-    # Use this import for psycopg2
+    conn = dsql.connect("your-cluster.dsql.us-east-1.on.aws")
+```
+
+##### psycopg2
+
+```python
     import aurora_dsql_psycopg2 as dsql
 
     conn = dsql.connect("your-cluster.dsql.us-east-1.on.aws")
@@ -144,10 +161,14 @@ If the client needs more than one, then all the needed libraries need to be inst
 ##### psycopg
 
 ```python
-    # Use this import for psycopg
     import aurora_dsql_psycopg as dsql
 
-    # Use this import for psycopg2
+    conn = dsql.connect("your-cluster")
+```
+
+##### psycopg2
+
+```python
     import aurora_dsql_psycopg2 as dsql
 
     conn = dsql.connect("your-cluster")
@@ -164,7 +185,7 @@ If the client needs more than one, then all the needed libraries need to be inst
 
 **Note:** 
 
-In the above scenario, the region is used that was set previously on the machine, e.g.:
+In the 'using just cluster ID' scenario, the region that was set previously on the machine is used, e.g.:
 
 ```bash
 aws configure set region us-east-1
@@ -176,10 +197,18 @@ To make it work, provide region as a parameter as in the example below:
 ##### psycopg
 
 ```python
-    # Use this import for psycopg
     import aurora_dsql_psycopg as dsql
 
-    # Use this import for psycopg2
+    config = {
+            "region": "us-east-1",
+    }
+
+    conn = dsql.connect("your-cluster", **config)
+```
+
+##### psycopg2
+
+```python
     import aurora_dsql_psycopg2 as dsql
 
     config = {
@@ -207,10 +236,14 @@ To make it work, provide region as a parameter as in the example below:
 #### psycopg
 
 ```python
-    # Use this import for psycopg
     import aurora_dsql_psycopg as dsql
 
-    # Use this import for psycopg2
+    conn = dsql.connect("postgresql://your-cluster.dsql.us-east-1.on.aws/postgres?user=admin&token_duration_secs=15")
+```
+
+#### psycopg2
+
+```python
     import aurora_dsql_psycopg2 as dsql
 
     conn = dsql.connect("postgresql://your-cluster.dsql.us-east-1.on.aws/postgres?user=admin&token_duration_secs=15")
@@ -230,10 +263,26 @@ To make it work, provide region as a parameter as in the example below:
 #### psycopg
 
 ```python
-    # Use this import for psycopg
     import aurora_dsql_psycopg as dsql
 
-    # Use this import for psycopg2
+    config = {
+        'host': "your-cluster.dsql.us-east-1.on.aws",
+        'region': "us-east-1",
+        'user': "admin",
+        "profile": "default",
+        "token_duration_secs": "15",
+    }
+        
+    conn = dsql.connect(**config)
+    with conn.cursor() as cur:
+        cur.execute("SELECT 1")
+        result = cur.fetchone()
+        print(result)
+```
+
+#### psycopg2
+
+```python
     import aurora_dsql_psycopg2 as dsql
 
     config = {
