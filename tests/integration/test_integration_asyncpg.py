@@ -114,7 +114,6 @@ class TestIntegrationAsyncpg:
         table_name = "test_integration_db_operations_asyncpg"
         conn = await dsql.connect(**cluster_config)
         try:
-
             await conn.execute(
                 f"""
                 CREATE TABLE IF NOT EXISTS {table_name} (
@@ -166,15 +165,11 @@ class TestIntegrationAsyncpg:
             custom_credentials_provider=custom_provider,
         )
 
-        assert (
-            custom_provider.load_called
-        ), "Custom credentials provider load() was not called"
+        assert custom_provider.load_called, "Custom credentials provider load() was not called"
         await self._assert_connection_functional(conn)
 
     @pytest.mark.asyncio
-    async def test_connection_with_custom_credentials_provider_in_kwargs(
-        self, cluster_config
-    ):
+    async def test_connection_with_custom_credentials_provider_in_kwargs(self, cluster_config):
         """Test connection using custom credentials provider."""
 
         config = {
@@ -186,14 +181,11 @@ class TestIntegrationAsyncpg:
         config["custom_credentials_provider"] = custom_provider
         conn = await dsql.connect(**config)
 
-        assert (
-            custom_provider.load_called
-        ), "Custom credentials provider load() was not called"
+        assert custom_provider.load_called, "Custom credentials provider load() was not called"
         await self._assert_connection_functional(conn)
 
     @pytest.mark.asyncio
     async def test_basic_connection_ssl_false(self, cluster_config):
-
         with pytest.raises((RuntimeError, ProtocolViolationError)) as exc_info:
             await dsql.connect(ssl=False, **cluster_config)
 
@@ -202,27 +194,22 @@ class TestIntegrationAsyncpg:
 
     @pytest.mark.asyncio
     async def test_basic_connection_ssl(self, cluster_config):
-
         conn = await dsql.connect(ssl=True, **cluster_config)
         await self._assert_connection_functional(conn)
 
     @pytest.mark.asyncio
     async def test_basic_connection_ssl_require(self, cluster_config):
-
         conn = await dsql.connect(ssl="require", **cluster_config)
         await self._assert_connection_functional(conn)
 
     @pytest.mark.asyncio
     async def test_basic_connection_ssl_context_in_named_param(self, cluster_config):
-
         ssl_cert_path = os.getenv("SSL_CERT_PATH")
         if not ssl_cert_path:
             raise ValueError("SSL_CERT_PATH environment variable not set")
 
         ssl_context = ssl.create_default_context()
-        ssl_context.check_hostname = (
-            True  # This enables hostname verification (verify-full)
-        )
+        ssl_context.check_hostname = True  # This enables hostname verification (verify-full)
         ssl_context.verify_mode = ssl.CERT_REQUIRED  # This is equivalent to verify-full
         ssl_context.load_verify_locations(ssl_cert_path)
 
@@ -231,7 +218,6 @@ class TestIntegrationAsyncpg:
 
     @pytest.mark.asyncio
     async def test_basic_connection_ssl_context_no_cert_specified(self, cluster_config):
-
         ssl_context = ssl.SSLContext(ssl.PROTOCOL_TLS_CLIENT)
         ssl_context.check_hostname = True
         ssl_context.verify_mode = ssl.CERT_REQUIRED
@@ -244,15 +230,12 @@ class TestIntegrationAsyncpg:
 
     @pytest.mark.asyncio
     async def test_basic_connection_ssl_context_in_kwargs(self, cluster_config):
-
         ssl_cert_path = os.getenv("SSL_CERT_PATH")
         if not ssl_cert_path:
             raise ValueError("SSL_CERT_PATH environment variable not set")
 
         ssl_context = ssl.create_default_context()
-        ssl_context.check_hostname = (
-            True  # This enables hostname verification (verify-full)
-        )
+        ssl_context.check_hostname = True  # This enables hostname verification (verify-full)
         ssl_context.verify_mode = ssl.CERT_REQUIRED  # This is equivalent to verify-full
         ssl_context.load_verify_locations(ssl_cert_path)
 
@@ -262,24 +245,21 @@ class TestIntegrationAsyncpg:
         await self._assert_connection_functional(conn)
 
     @pytest.mark.asyncio
-    async def test_basic_connection_ssl_sslrootcert_not_needed_with_context(
-        self, cluster_config
-    ):
-
+    async def test_basic_connection_ssl_sslrootcert_not_needed_with_context(self, cluster_config):
         ssl_cert_path = os.getenv("SSL_CERT_PATH")
         if not ssl_cert_path:
             raise ValueError("SSL_CERT_PATH environment variable not set")
 
         ssl_context = ssl.create_default_context()
-        ssl_context.check_hostname = (
-            True  # This enables hostname verification (verify-full)
-        )
+        ssl_context.check_hostname = True  # This enables hostname verification (verify-full)
         ssl_context.verify_mode = ssl.CERT_REQUIRED  # This is equivalent to verify-full
         ssl_context.load_verify_locations(ssl_cert_path)
 
         cluster_config["ssl"] = ssl_context
         cluster_config["sslrootcert"] = (
-            ssl_cert_path  # This parameter should be ignored given that ssl parameter is already specifying full context
+            # This parameter should be ignored given that ssl parameter
+            # is already specifying full context
+            ssl_cert_path
         )
 
         conn = await dsql.connect(**cluster_config)
@@ -287,7 +267,6 @@ class TestIntegrationAsyncpg:
 
     @pytest.mark.asyncio
     async def test_basic_connection_ssl_context_with_verify_ca(self, cluster_config):
-
         ssl_cert_path = os.getenv("SSL_CERT_PATH")
         if not ssl_cert_path:
             raise ValueError("SSL_CERT_PATH environment variable not set")
@@ -303,7 +282,6 @@ class TestIntegrationAsyncpg:
     async def test_basic_connection_ssl_context_no_cert_specified_with_verify_ca(
         self, cluster_config
     ):
-
         ssl_context = ssl.SSLContext(ssl.PROTOCOL_TLS_CLIENT)
         ssl_context.check_hostname = True
         ssl_context.verify_mode = ssl.CERT_OPTIONAL  # This is equivalent to verify-ca
@@ -316,8 +294,8 @@ class TestIntegrationAsyncpg:
 
     @pytest.mark.asyncio
     async def test_basic_connection_ssl_sslrootcert_direct(self, cluster_config):
-
-        # This test works because handling was added in the connector to support these parameters from dsn.
+        # This test works because handling was added in the connector to support
+        # these parameters from dsn.
         # The connector internally will use ssl context when handling this scenario.
 
         ssl_cert_path = os.getenv("SSL_CERT_PATH")
@@ -331,10 +309,7 @@ class TestIntegrationAsyncpg:
         await self._assert_connection_functional(conn)
 
     @pytest.mark.asyncio
-    async def test_basic_connection_ssl_sslrootcert_direct_with_verify_ca(
-        self, cluster_config
-    ):
-
+    async def test_basic_connection_ssl_sslrootcert_direct_with_verify_ca(self, cluster_config):
         ssl_cert_path = os.getenv("SSL_CERT_PATH")
         if not ssl_cert_path:
             raise ValueError("SSL_CERT_PATH environment variable not set")
@@ -386,8 +361,9 @@ class TestIntegrationAsyncpg:
 
     @pytest.mark.asyncio
     async def test_connect_with_dsn_sslmode_disable(self, cluster_config):
-
-        conn_str = f"postgresql://{cluster_config['host']}/{cluster_config['database']}?sslmode=disable"
+        conn_str = (
+            f"postgresql://{cluster_config['host']}/{cluster_config['database']}?sslmode=disable"
+        )
 
         with pytest.raises((RuntimeError, ProtocolViolationError)) as exc_info:
             await dsql.connect(dsn=conn_str)
@@ -403,12 +379,12 @@ class TestIntegrationAsyncpg:
             result = await conn.fetchrow("SELECT current_setting('application_name')")
             app_name = result[0]
             assert app_name is not None, "Application name should not be None"
-            assert (
-                "aurora-dsql-python-asyncpg" in app_name
-            ), f"Application name should contain 'aurora-dsql-python-asyncpg', got: {app_name}"
-            assert (
-                "/" in app_name
-            ), f"Application name should contain version separator '/', got: {app_name}"
+            assert "aurora-dsql-python-asyncpg" in app_name, (
+                f"Application name should contain 'aurora-dsql-python-asyncpg', got: {app_name}"
+            )
+            assert "/" in app_name, (
+                f"Application name should contain version separator '/', got: {app_name}"
+            )
             print(f"Application name: {app_name}")
         finally:
             await conn.close()
@@ -426,8 +402,7 @@ class TestIntegrationAsyncpg:
             assert app_name is not None, "Application name should not be None"
             expected_prefix = "prisma:aurora-dsql-python-asyncpg"
             assert app_name.startswith(expected_prefix), (
-                f"Application name should start with '{expected_prefix}', "
-                f"got: {app_name}"
+                f"Application name should start with '{expected_prefix}', got: {app_name}"
             )
             print(f"Application name with ORM prefix: {app_name}")
         finally:

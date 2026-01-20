@@ -83,9 +83,7 @@ class TestIntegrationPsycopgCommon:
             dsql2,
         ],
     )
-    def test_connection_with_cluster_id_only(
-        self, cluster_config, dsql_connector, monkeypatch
-    ):
+    def test_connection_with_cluster_id_only(self, cluster_config, dsql_connector, monkeypatch):
         """Test connection with cluster ID using default region from environment."""
         monkeypatch.setenv("AWS_DEFAULT_REGION", cluster_config["region"])
 
@@ -100,9 +98,7 @@ class TestIntegrationPsycopgCommon:
             dsql2,
         ],
     )
-    def test_connection_with_cluster_id_and_region(
-        self, cluster_config, dsql_connector
-    ):
+    def test_connection_with_cluster_id_and_region(self, cluster_config, dsql_connector):
         cluster_id = cluster_config["host"].split(".")[0]
         config = {
             "region": cluster_config["region"],
@@ -188,9 +184,7 @@ class TestIntegrationPsycopgCommon:
             (dsql2, Psycopg2OperationalError),
         ],
     )
-    def test_custom_token_duration(
-        self, cluster_config, dsql_connector, expected_error
-    ):
+    def test_custom_token_duration(self, cluster_config, dsql_connector, expected_error):
         """Test connection with custom token duration."""
 
         # According to https://docs.aws.amazon.com/aurora-dsql/latest/userguide/SECTION_authentication-token.html
@@ -229,9 +223,7 @@ class TestIntegrationPsycopgCommon:
             dsql2,
         ],
     )
-    def test_connection_with_custom_credentials_provider(
-        self, cluster_config, dsql_connector
-    ):
+    def test_connection_with_custom_credentials_provider(self, cluster_config, dsql_connector):
         """Test connection using custom credentials provider."""
 
         custom_provider = CustomCredentialProvider()
@@ -241,9 +233,7 @@ class TestIntegrationPsycopgCommon:
             custom_credentials_provider=custom_provider,
         )
 
-        assert (
-            custom_provider.load_called
-        ), "Custom credentials provider load() was not called"
+        assert custom_provider.load_called, "Custom credentials provider load() was not called"
         self._assert_connection_functional(conn)
 
     @pytest.mark.parametrize(
@@ -263,12 +253,12 @@ class TestIntegrationPsycopgCommon:
                 app_name = result[0]
                 assert app_name is not None, "Application name should not be None"
                 # Check for psycopg or psycopg2 in the name
-                assert (
-                    "aurora-dsql-python-" in app_name
-                ), f"Application name should contain 'aurora-dsql-python-', got: {app_name}"
-                assert (
-                    "/" in app_name
-                ), f"Application name should contain version separator '/', got: {app_name}"
+                assert "aurora-dsql-python-" in app_name, (
+                    f"Application name should contain 'aurora-dsql-python-', got: {app_name}"
+                )
+                assert "/" in app_name, (
+                    f"Application name should contain version separator '/', got: {app_name}"
+                )
                 print(f"Application name: {app_name}")
         finally:
             conn.close()
@@ -294,8 +284,7 @@ class TestIntegrationPsycopgCommon:
                 assert app_name is not None, "Application name should not be None"
                 expected_prefix = "sqlalchemy:aurora-dsql-python-"
                 assert app_name.startswith(expected_prefix), (
-                    f"Application name should start with '{expected_prefix}', "
-                    f"got: {app_name}"
+                    f"Application name should start with '{expected_prefix}', got: {app_name}"
                 )
                 print(f"Application name with ORM prefix: {app_name}")
         finally:

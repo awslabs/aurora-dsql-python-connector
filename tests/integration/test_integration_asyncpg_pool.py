@@ -81,9 +81,7 @@ class TestIntegrationAsyncpgPool:
         config["custom_credentials_provider"] = custom_provider
 
         pool = await dsql.create_pool(min_size=2, max_size=5, **config)
-        assert (
-            custom_provider.load_called
-        ), "Custom credentials provider load() was not called"
+        assert custom_provider.load_called, "Custom credentials provider load() was not called"
 
         try:
             # Test acquiring and releasing connections
@@ -119,9 +117,7 @@ class TestIntegrationAsyncpgPool:
             raise ValueError("SSL_CERT_PATH environment variable not set")
 
         ssl_context = ssl.create_default_context()
-        ssl_context.check_hostname = (
-            True  # This enables hostname verification (verify-full)
-        )
+        ssl_context.check_hostname = True  # This enables hostname verification (verify-full)
         ssl_context.verify_mode = ssl.CERT_REQUIRED  # This is equivalent to verify-full
         ssl_context.load_verify_locations(ssl_cert_path)
 
