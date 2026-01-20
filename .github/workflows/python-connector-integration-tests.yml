@@ -37,7 +37,7 @@ jobs:
       id-token: write # required by aws-actions/configure-aws-credentials
     concurrency:
       # Ensure only 1 job uses the workflow cluster at a time.
-      group: ${{ github.workflow }}-${{ matrix.python-version }}
+      group: ${{ github.workflow }}
 
     steps:
     - name: Checkout code
