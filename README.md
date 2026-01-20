@@ -473,6 +473,9 @@ For instructions how to run the examples please refer to the examples READMDE fi
 # Install dependencies
 pip install -e ".[psycopg,psycopg2,asyncpg,dev]"
 
+# Install pre-commit hooks
+pre-commit install
+
 # Run unit tests
 python -m pytest tests/unit/
 
