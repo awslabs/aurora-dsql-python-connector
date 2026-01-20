@@ -52,20 +52,19 @@ jobs:
         source .venv/bin/activate
         pip install --upgrade pip
         pip install -e ".[dev]"
-        pip install poetry
     
     - name: Run mypy - static type checking
       run: |
         source .venv/bin/activate
-        poetry run mypy .
+        mypy .
     
     - name: Run flake8 - linting
       run: |
         source .venv/bin/activate
-        poetry run flake8 .
+        flake8 .
     
     - name: Run isort - dependency import sorting check
       run: |
         source .venv/bin/activate
-        poetry run isort --check-only .
+        isort --check-only .
 
