@@ -469,21 +469,46 @@ For instructions how to run the examples please refer to the examples READMDE fi
 
 ## Development
 
+### Install `uv`
+
+Install `uv` using the [official installation guide](https://docs.astral.sh/uv/getting-started/installation/) or via [mise](https://mise.jdx.dev/).
+
+### Install dependencies
+
 ```bash
-# Install dependencies
-pip install -e ".[psycopg,psycopg2,asyncpg,dev]"
+uv sync --all-extras
+```
 
-# Install pre-commit hooks
-pre-commit install
+### Install pre-commit hooks
 
-# Run unit tests
-python -m pytest tests/unit/
+```bash
+uv run pre-commit install
+```
 
-# Set a cluster for use in integration tests
+### Run unit tests
+
+```bash
+uv run pytest tests/unit
+```
+
+### Configure environment variables
+
+Copy `.env.example` to `.env` and update with your cluster details:
+
+```bash
+cp .env.example .env
+```
+
+Alternatively, set the environment variable directly:
+
+```bash
 export CLUSTER_ENDPOINT=your-cluster.dsql.us-east-1.on.aws
+```
 
-# Run integration tests
-python -m pytest tests/integration/
+### Run integration tests
+
+```bash
+uv run pytest tests/integration
 ```
 
 ## License
