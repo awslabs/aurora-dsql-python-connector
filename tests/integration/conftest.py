@@ -6,10 +6,10 @@ SPDX-License-Identifier: Apache-2.0
 import os
 import tempfile
 import urllib.request
-from dotenv import load_dotenv
 from urllib.error import URLError
 
 import pytest
+from dotenv import load_dotenv
 
 load_dotenv()
 
