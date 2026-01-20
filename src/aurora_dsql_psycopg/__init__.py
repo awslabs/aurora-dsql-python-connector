@@ -13,4 +13,4 @@ threadsafety = 2
 paramstyle = "pyformat"
 
 
-__all__ = ["connect", "DSQLConnection", "DSQLAsyncConnection"]
+__all__ = ["connect", "DSQLConnection", "DSQLAsyncConnection", "__version__"]

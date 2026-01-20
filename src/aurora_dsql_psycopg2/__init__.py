@@ -11,4 +11,4 @@ apilevel = "2.0"
 threadsafety = 2
 paramstyle = "pyformat"
 
-__all__ = ["connect", "AuroraDSQLThreadedConnectionPool"]
+__all__ = ["connect", "AuroraDSQLThreadedConnectionPool", "__version__"]
