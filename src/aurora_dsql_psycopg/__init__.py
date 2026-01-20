@@ -4,6 +4,7 @@ SPDX-License-Identifier: Apache-2.0
 """
 
 from dsql_core._version import __version__
+
 from .connection_class import DSQLAsyncConnection, DSQLConnection
 
 # DBAPI compliance
