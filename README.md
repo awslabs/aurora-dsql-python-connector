@@ -475,11 +475,25 @@ pip install -e ".[psycopg,psycopg2,asyncpg,dev]"
 
 # Run unit tests
 python -m pytest tests/unit/
+```
 
-# Set a cluster for use in integration tests
+### Configure environment variables
+
+Copy `.env.example` to `.env` and update with your cluster details:
+
+```bash
+cp .env.example .env
+```
+
+Alternatively, set the environment variable directly:
+
+```bash
 export CLUSTER_ENDPOINT=your-cluster.dsql.us-east-1.on.aws
+```
 
-# Run integration tests
+### Run integration tests
+
+```bash
 python -m pytest tests/integration/
 ```
 
