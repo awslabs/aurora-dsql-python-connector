@@ -469,12 +469,20 @@ For instructions how to run the examples please refer to the examples READMDE fi
 
 ## Development
 
-```bash
-# Install dependencies
-pip install -e ".[psycopg,psycopg2,asyncpg,dev]"
+### Install `uv`
 
-# Run unit tests
-python -m pytest tests/unit/
+Install `uv` using the [official installation guide](https://docs.astral.sh/uv/getting-started/installation/) or via [mise](https://mise.jdx.dev/).
+
+### Install dependencies
+
+```bash
+uv sync --all-extras
+```
+
+### Run unit tests
+
+```bash
+uv run pytest tests/unit
 ```
 
 ### Configure environment variables
@@ -494,7 +502,7 @@ export CLUSTER_ENDPOINT=your-cluster.dsql.us-east-1.on.aws
 ### Run integration tests
 
 ```bash
-python -m pytest tests/integration/
+uv run pytest tests/integration
 ```
 
 ## License
