@@ -13,6 +13,7 @@ import pytest
 
 load_dotenv()
 
+
 @pytest.fixture(scope="session")
 def ssl_cert_path():
     """Download Amazon root certificate if not present."""
