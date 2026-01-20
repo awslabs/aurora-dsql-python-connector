@@ -45,7 +45,7 @@ jobs:
 
     steps:
     - name: Checkout code
-      uses: actions/checkout@v4
+      uses: actions/checkout@v6
 
     - name: Configure AWS Credentials
       uses: aws-actions/configure-aws-credentials@v4
@@ -63,10 +63,8 @@ jobs:
         CLUSTER_USER: "admin"
         CLUSTER_ENDPOINT: ${{ secrets.AURORA_DSQL_INTEGRATION_CLUSTER_ENDPOINT }}
         REGION: ${{ secrets.AURORA_DSQL_INTEGRATION_CLUSTER_REGION }}
-        SSL_CERT_PATH: "./root.pem"
       run: |
         uv sync --all-extras
-        wget https://www.amazontrust.com/repository/AmazonRootCA1.pem -O root.pem
         uv run pytest tests/integration
 
     - name: Run psycopg example smoke tests
