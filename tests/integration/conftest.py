@@ -9,6 +9,9 @@ import urllib.request
 from urllib.error import URLError
 
 import pytest
+from dotenv import load_dotenv
+
+load_dotenv()
 
 
 @pytest.fixture(scope="session")
@@ -21,7 +24,9 @@ def ssl_cert_path():
     cert_path = os.path.join(tempfile.gettempdir(), "AmazonRootCA1.pem")
     if not os.path.exists(cert_path):
         try:
-            with urllib.request.urlopen("https://www.amazontrust.com/repository/AmazonRootCA1.pem", timeout=10) as response:
+            with urllib.request.urlopen(
+                "https://www.amazontrust.com/repository/AmazonRootCA1.pem", timeout=10
+            ) as response:
                 with open(cert_path, "wb") as f:
                     f.write(response.read())
         except URLError as e:
