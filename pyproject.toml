@@ -1,10 +1,10 @@
 [build-system]
-requires = ["setuptools>=61.0", "wheel"]
-build-backend = "setuptools.build_meta"
+requires = ["hatchling", "hatch-vcs"]
+build-backend = "hatchling.build"
 
 [project]
 name = "aurora-dsql-python-connector"
-version = "0.2.2"
+dynamic = ["version"]
 description = "A connector that integrates IAM Authentication for connecting Python applications to Amazon Aurora DSQL clusters"
 readme = "README.md"
 license = "Apache-2.0"
@@ -40,15 +40,30 @@ asyncpg = [
    "asyncpg>=0.30.0",
 ]
 
+[dependency-groups]
 dev = [
     "pytest>=8.0",
     "pytest-cov>=4.0.0",
     "pytest-asyncio>=1.2.0",
     "python-dotenv>=1.0.0",
+    "hatch-vcs",
     "mypy>=1.0.0",
     "ruff",
     "pre-commit",
 ]
+psycopg = [
+    "psycopg[binary]>=3.1.0",
+    "psycopg-pool>=3.2.6",
+]
+psycopg2 = [
+    "psycopg2-binary>=2.9.0",
+]
+asyncpg = [
+    "asyncpg>=0.30.0",
+]
+
+[tool.uv]
+default-groups = ["dev", "psycopg", "psycopg2", "asyncpg"]
 
 [project.urls]
 Homepage = "https://github.com/awslabs/aurora-dsql-python-connector"
@@ -56,8 +71,14 @@ Repository = "https://github.com/awslabs/aurora-dsql-python-connector"
 Documentation = "https://github.com/awslabs/aurora-dsql-python-connector"
 "Bug Tracker" = "https://github.com/awslabs/aurora-dsql-python-connector/issues"
 
-[tool.setuptools.packages.find]
-where = ["src"]
+[tool.hatch.version]
+source = "vcs"
+
+[tool.hatch.build.hooks.vcs]
+version-file = "src/dsql_core/_version.py"
+
+[tool.hatch.build.targets.wheel]
+packages = ["src/aurora_dsql_asyncpg", "src/aurora_dsql_psycopg", "src/aurora_dsql_psycopg2", "src/dsql_core"]
 
 [tool.ruff]
 line-length = 100
