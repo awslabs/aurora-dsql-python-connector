@@ -61,50 +61,50 @@ jobs:
         with:
           python-version: ${{ matrix.python-version }}
 
-    - name: Run integration tests
-      env:
-        CLUSTER_USER: "admin"
-        CLUSTER_ENDPOINT: ${{ needs.create-cluster.outputs.cluster-endpoint }}
-        REGION: ${{ needs.create-cluster.outputs.region }}
-      run: |
-        uv sync
-        uv run pytest tests/integration
+      - name: Run integration tests
+        env:
+          CLUSTER_USER: "admin"
+          CLUSTER_ENDPOINT: ${{ needs.create-cluster.outputs.cluster-endpoint }}
+          REGION: ${{ needs.create-cluster.outputs.region }}
+        run: |
+          uv sync
+          uv run pytest tests/integration
 
-    - name: Run psycopg example smoke tests
-      working-directory: ./examples/psycopg
-      env:
-        CLUSTER_USER: "admin"
-        CLUSTER_ENDPOINT: ${{ needs.create-cluster.outputs.cluster-endpoint }}
-        REGION: ${{ needs.create-cluster.outputs.region }}
-        SSL_CERT_PATH: "./root.pem"
-      run: |
-        uv sync
-        wget https://www.amazontrust.com/repository/AmazonRootCA1.pem -O root.pem
-        uv run pytest
+      - name: Run psycopg example smoke tests
+        working-directory: ./examples/psycopg
+        env:
+          CLUSTER_USER: "admin"
+          CLUSTER_ENDPOINT: ${{ needs.create-cluster.outputs.cluster-endpoint }}
+          REGION: ${{ needs.create-cluster.outputs.region }}
+          SSL_CERT_PATH: "./root.pem"
+        run: |
+          uv sync
+          wget https://www.amazontrust.com/repository/AmazonRootCA1.pem -O root.pem
+          uv run pytest
 
-    - name: Run psycopg2 example smoke tests
-      working-directory: ./examples/psycopg2
-      env:
-        CLUSTER_USER: "admin"
-        CLUSTER_ENDPOINT: ${{ needs.create-cluster.outputs.cluster-endpoint }}
-        REGION: ${{ needs.create-cluster.outputs.region }}
-        SSL_CERT_PATH: "./root.pem"
-      run: |
-        uv sync
-        wget https://www.amazontrust.com/repository/AmazonRootCA1.pem -O root.pem
-        uv run pytest
+      - name: Run psycopg2 example smoke tests
+        working-directory: ./examples/psycopg2
+        env:
+          CLUSTER_USER: "admin"
+          CLUSTER_ENDPOINT: ${{ needs.create-cluster.outputs.cluster-endpoint }}
+          REGION: ${{ needs.create-cluster.outputs.region }}
+          SSL_CERT_PATH: "./root.pem"
+        run: |
+          uv sync
+          wget https://www.amazontrust.com/repository/AmazonRootCA1.pem -O root.pem
+          uv run pytest
 
-    - name: Run asyncpg example smoke tests
-      working-directory: ./examples/asyncpg
-      env:
-        CLUSTER_USER: "admin"
-        CLUSTER_ENDPOINT: ${{ needs.create-cluster.outputs.cluster-endpoint }}
-        REGION: ${{ needs.create-cluster.outputs.region }}
-        SSL_CERT_PATH: "./root.pem"
-      run: |
-        uv sync
-        wget https://www.amazontrust.com/repository/AmazonRootCA1.pem -O root.pem
-        uv run pytest
+      - name: Run asyncpg example smoke tests
+        working-directory: ./examples/asyncpg
+        env:
+          CLUSTER_USER: "admin"
+          CLUSTER_ENDPOINT: ${{ needs.create-cluster.outputs.cluster-endpoint }}
+          REGION: ${{ needs.create-cluster.outputs.region }}
+          SSL_CERT_PATH: "./root.pem"
+        run: |
+          uv sync
+          wget https://www.amazontrust.com/repository/AmazonRootCA1.pem -O root.pem
+          uv run pytest
 
   delete-cluster:
     if: always() && needs.create-cluster.result == 'success'
